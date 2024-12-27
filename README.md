@@ -1,3 +1,5 @@
+[![Badge NPM]][NPM]
+
 ## Structured-Cloneable to Unicode-Only serializer/deserializer
 
 Serialize/deserialize arbitrary JS data to/from well-formed Unicode strings.
@@ -96,3 +98,12 @@ data types.
 ### Validation
 
 Use `npm run test` to execute test suite.
+
+
+<!----------------------------------------------------------------------------->
+
+[NPM]: https://www.npmjs.com/package/@gorhill/s14e-serializer
+
+<!----------------------------------[ Badges ]--------------------------------->
+
+[Badge NPM]: https://img.shields.io/npm/v/@gorhill/s14e-serializer
