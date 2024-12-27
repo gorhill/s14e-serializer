@@ -1,0 +1,32 @@
+{
+  "name": "@gorhill/s14e-serializer",
+  "version": "0.5.0",
+  "description": "A library to de/serialize structured-cloneable data to a Unicode string",
+  "keywords": [
+    "structured clone",
+    "structuredClone",
+    "serialize",
+    "deserialize",
+    "worker",
+    "compression",
+    "lz4"
+  ],
+  "homepage": "https://github.com/gorhill/s14e-serializer#readme",
+  "bugs": {
+    "url": "https://github.com/gorhill/s14e-serializer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gorhill/s14e-serializer.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Raymond Hill (https://github.com/gorhill)",
+  "type": "module",
+  "main": "s14e-serializer.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  }
+}
