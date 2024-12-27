@@ -91,13 +91,24 @@ import {
 
 ```
 
+### Caveats
+
+Currently not all built-in JS data types are supported.
 
 See [test/test.js](./test/test.js) for typical usage and currently supported
 data types.
 
+Contributions are welcome.
+
 ### Validation
 
-Use `npm run test` to execute test suite.
+The linter should return no errors or warnings:
+
+    npm run lint
+
+The test suite should not fail:
+
+    npm run test
 
 
 <!----------------------------------------------------------------------------->

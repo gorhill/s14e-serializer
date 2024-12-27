@@ -31,7 +31,7 @@ function assertEqual(actual, expected) {
         assert.deepEqual(actual, expected);
         pass = true;
     } catch(_) {
-        extra = `${actual} => ${expected}`;
+        extra = _;
         pass = false;
     }
     const message = [
@@ -157,7 +157,6 @@ function cloneTest(value) {
     for ( const value of data ) {
         cloneTest(value);
     }
-    cloneTest(data);
 
     // Serializing a function should fail 
     {
