@@ -25,24 +25,30 @@ const strFromPassOrFail = (result, expect = true) => [
     NoColor,
 ].join('');
 
-function assertEqual(actual, expected) {
-    let pass, extra;
+const objType = o => {
+    const type = typeof o;
+    if ( type !== 'object' ) { return type; }
+    return Object.prototype.toString.call(o).slice(8, -1);
+};
+
+/******************************************************************************/
+
+function assertEqual(actual, expected, message) {
+    let pass;
     try {
-        assert.deepEqual(actual, expected);
+        assert.deepStrictEqual(actual, expected);
         pass = true;
     } catch(_) {
-        extra = _;
+        void _;
         pass = false;
     }
-    const message = [
-        strFromPassOrFail(pass),
-        typeof actual === 'object'
-            ? Object.prototype.toString.call(actual)
-            : actual,
-        ' ',
-        extra,
-    ].join(' ');
-    console.log(message);
+    if ( message === undefined ) {
+        message = `${objType(actual)}: ${actual}`;
+        if ( message.length > 40 ) {
+            message = `${message.slice(0, 39)}\u2026`;
+        }
+    }
+    console.log(strFromPassOrFail(pass), message);
 }
 
 function assertPass(result, message) {
@@ -68,6 +74,8 @@ function cloneData(data, options = {}) {
 function cloneTest(value) {
     assertEqual(value, cloneData(value));
 }
+
+/******************************************************************************/
 
 // I shamelessly pilfered some test units data from:
 // https://github.com/zloirock/core-js/blob/master/tests/unit-global/web.structured-clone.js#L20C1-L72C1
@@ -158,11 +166,11 @@ function cloneTest(value) {
         cloneTest(value);
     }
 
-    // Serializing a function should fail 
+    // Promise-based
     {
-        const fn = function(){};
-        const clone = cloneData(fn);
-        assertFail(clone === undefined, 'Serializing a function should fail');
+        const s = await serializeAsync(data);
+        const clone = await deserializeAsync(s);
+        assertEqual(clone, data, 'Promise-based API');
     }
 
     // Self-reference in Object
@@ -202,24 +210,45 @@ function cloneTest(value) {
         obj.u8 = new Uint8Array(obj.u32.buffer, 64, 128);
         const clone = cloneData(obj);
         assertPass(clone.u8.buffer === clone.u32.buffer, 'ArrayBuffer shared by multiple typed arrays');
-        assert.deepEqual(obj, clone);
-    }
-
-    const text = await readFile('./s14e-serializer.js', { encoding: 'utf8' });
-
-    // Promise-based
-    {
-        const s = await serializeAsync(text);
-        const clone = await deserializeAsync(s);
-        assertPass(clone === text, 'Serialized-deserialized asynchronously');
+        assert.deepStrictEqual(obj, clone);
     }
 
     // Compression-decompression
-    {
+     {
+        const text = await readFile('./s14e-serializer.js', { encoding: 'utf8' });
         const s0 = serialize(text);
         const s1 = serialize(text, { compress: true });
         assertPass(true, `Compression after/before: ${s1.length}/${s0.length}`);
         const clone = deserialize(s1);
         assertPass(clone === text, 'Deserialized from compressed serialization');
     }
+
+    // https://github.com/commenthol/serialize-to-js/issues/18
+    {
+        const obj = {
+            ref1: { foo: 'bar' },
+            m: new Map(),
+        }
+        obj.ref2 = obj.ref1;
+        obj.ref3 = obj.ref1;
+        obj.m.set('key1', obj.ref1);
+        obj.m.set('key2', obj.ref2);
+        const clone = cloneData(obj);
+        assertPass(
+            clone.ref2 === clone.ref1 && clone.ref3 === clone.ref1,
+            'Properly restored references to object'
+        );
+        assertPass(
+            clone.m.get('key1') === clone.ref1 && clone.m.get('key2') === clone.ref2,
+            'Properly restored references to object used as values in Map'
+        );
+    }
+
+    // Serializing a function should fail 
+    {
+        const fn = function(){};
+        const clone = cloneData(fn);
+        assertFail(clone === undefined, 'Serializing a function should fail');
+    }
+
 })();

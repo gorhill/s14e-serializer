@@ -1,15 +1,12 @@
 {
   "name": "@gorhill/s14e-serializer",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A library to de/serialize structured-cloneable data to a Unicode string",
   "keywords": [
-    "structured clone",
-    "structuredClone",
-    "serialize",
-    "deserialize",
-    "worker",
-    "compression",
-    "lz4"
+    "structured clone", "structuredclone",
+    "object", "set", "map", "typedarray",
+    "serialize", "deserialize", "serialization", "deserialization",
+    "compression", "lz4"
   ],
   "homepage": "https://github.com/gorhill/s14e-serializer#readme",
   "bugs": {
