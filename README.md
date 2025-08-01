@@ -1,6 +1,6 @@
 [![Badge NPM]][NPM]
 
-## Structured-Cloneable to Unicode-Only serializer/deserializer
+## Structured-cloneable to Unicode-only serializer/deserializer
 
 Serialize/deserialize JavaScript data to/from well-formed Unicode strings.
 
@@ -46,7 +46,7 @@ browser.storage | Yes              | Yes              | No
 Cache API       | Yes              | No               | No
 
 The above table shows that only JS strings can be persisted natively to all
-types of storage. The purpose of this library is to convert structure-cloneable
+types of storage. The purpose of this library is to convert structured-cloneable
 data (which is a superset of JSONable data) into a single JS string.
 
 ### Usage

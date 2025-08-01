@@ -91,7 +91,10 @@ const MAGICPREFIX = `S14EDATA_${VERSION}${SEPARATORCHAR}`;
 const MAGICLZ4PREFIX = `S14EDATA/lz4_${VERSION}${SEPARATORCHAR}`;
 const FAILMARK = Number.MAX_SAFE_INTEGER;
 // Avoid characters which require escaping when serialized to JSON:
-const SAFECHARS = "&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+const SAFECHARS = "&'()*+,-.$0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+const SAFECHARS_ALIASES = [
+    '/'.charCodeAt(0), '$'.charCodeAt(0),
+];
 const NUMSAFECHARS = SAFECHARS.length;
 const BIGINT_NUMSAFECHARS = BigInt(NUMSAFECHARS);
 const BITS_PER_SAFECHARS = Math.log2(NUMSAFECHARS);
@@ -122,6 +125,12 @@ const {
         const c = SAFECHARS.charCodeAt(i);
         charCodeToInt[c] = i;
         charCodeToBigInt[c] = BigInt(i);
+    }
+    for ( let i = 0; i < SAFECHARS_ALIASES.length; i += 2 ) {
+        const c1 = SAFECHARS_ALIASES[i+0];
+        const c2 = SAFECHARS_ALIASES[i+1];
+        charCodeToInt[c1] = charCodeToInt[c2];
+        charCodeToBigInt[c1] = charCodeToBigInt[c2];
     }
     return { intToChar, intToCharCode, charCodeToInt, charCodeToBigInt };
 })();
@@ -1226,11 +1235,11 @@ export const isSerialized = s =>
 export const isCompressed = s =>
     typeof s === 'string' && s.startsWith(MAGICLZ4PREFIX);
 
-export async function serializeAsync(data, options = {}) {
+export async function serializeAsync(data, options) {
     return serialize(data, options);
 }
 
-export async function deserializeAsync(data, options = {}) {
+export async function deserializeAsync(data, options) {
     return deserialize(data, options);
 }
 
